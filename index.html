@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue CRUD</title>
+</head>
+<body>
+
+<div id="app">
+
+    <h2>Fruit List</h2>
+
+    
+    <input type="text" v-model="fruit" placeholder="Enter Fruit">
+
+    
+    <button @click="Save">
+        {{ editIndex === -1 ? 'Add' : 'Update' }}
+    </button>
+
+    <button v-if="editIndex !== -1" @click="Cancel">
+        Cancel
+    </button>
+
+    
+    <ul>
+        <li v-for="(data, index) in dataList" :key="index">
+
+            {{ data }}
+
+            <button @click="Edit(index)">Edit</button>
+
+            <button @click="Delete(index)">Delete</button>
+
+        </li>
+    </ul>
+
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+<script>
+
+const { createApp } = Vue;
+
+createApp({
+
+    data() {
+        return {
+            fruit: "",
+            dataList: [],
+            editIndex: -1
+        }
+    },
+
+    methods: {
+
+        // ADD and UPDATE
+        Save() {
+
+            if (this.fruit.trim() === "") {
+                alert("Please enter fruit name");
+                return;
+            }
+
+            if (this.editIndex === -1) {
+
+                // ADD
+                this.dataList.push(this.fruit);
+
+            } else {
+
+                // UPDATE
+                this.dataList[this.editIndex] = this.fruit;
+
+            }
+
+            this.fruit = "";
+            this.editIndex = -1;
+
+        },
+
+        // DELETE
+        Delete(index) {
+
+            this.dataList.splice(index, 1);
+
+            if (this.editIndex === index) {
+                this.Cancel();
+            } else if (this.editIndex > index) {
+                this.editIndex--;
+            }
+
+        },
+
+        // EDIT
+        Edit(index) {
+
+            this.fruit = this.dataList[index];
+
+            this.editIndex = index;
+
+        },
+
+        // CANCEL EDIT
+        Cancel() {
+
+            this.fruit = "";
+            this.editIndex = -1;
+
+        }
+
+    }
+
+}).mount("#app");
+
+</script>
+
+</body>
+</html>
